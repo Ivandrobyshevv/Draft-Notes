@@ -24,7 +24,7 @@ class Method:
 
     def get_note_all(self):
         """Получение всех заметок"""
-        notes: dict = self.read_json()
+        notes = self.read_json()
         return notes
 
     def filter_date_notes(self, date: str):
@@ -38,14 +38,15 @@ class Method:
             return "Записей с такой датой нет"
         return notes_list
 
-    def correct_note(self, pk, title, body):
+    def edit_note(self, note_pk, title, body):
         """Изменение заметки"""
         file_json = self.read_json()
-        file_json[pk]['title'] = title
-        file_json[pk]['body'] = body
-        file_json[pk]['date'] = self.date
-        file_json[pk]['time'] = self.time
+        file_json[note_pk]['title'] = title
+        file_json[note_pk]['body'] = body
+        file_json[note_pk]['date'] = self.date
+        file_json[note_pk]['time'] = self.time
         self.write_json(file_json)
+        return file_json[note_pk]
 
     def update_pk(self):
         """Обновления первичного ключа"""
@@ -58,31 +59,43 @@ class Method:
 
     def save_json(self):
         """Сохранение заметки в notes.json"""
-        file_json_dict: dict = self.read_json()
+        file_json_dict = self.read_json()
         if file_json_dict is None:
             json_data = self.to_json
         else:
             json_data = file_json_dict | self.to_json
         self.write_json(json_data)
 
-    def delete_json(self, pk):
+    def delete_json(self, note_pk):
         """Удаление заметки из списка"""
         data_json = self.read_json()
         if data_json is not None:
-            delete_note = data_json.pop(pk, 'Значения с таким ключом нет')
+            delete_note = data_json.pop(note_pk, 'Значения с таким ключом нет')
             self.write_json(data_json)
             return delete_note
         return "Заметок нет создайте"
 
+    def correct_note_pk(self, note_pk):
+        """Проверка, что pk существует"""
+        notes_json = self.read_json()
+        for key in notes_json.keys():
+            if key == note_pk:
+                return True
+        return False
+
     @staticmethod
     def write_json(json_data):
+        """Запись в файл"""
         with open('notes.json', 'w') as file_json:
             json.dump(json_data, file_json)
 
     @staticmethod
     def read_json():
+        """Чтение файла"""
         try:
             with open('notes.json', 'r') as file_json:
                 return json.load(file_json)
+        except FileNotFoundError:
+            return None
         except JSONDecodeError:
             return None

@@ -11,5 +11,4 @@ def start_program():
 
 
 if __name__ == '__main__':
-    """Точка входа"""
     start_program()
