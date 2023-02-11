@@ -1,6 +1,5 @@
 from colorama import init
 
-from src import text
 
 from colorama import Fore
 
@@ -10,7 +9,7 @@ from src.methods import Method
 class Note:
     COOMAND_TEXT = "Список команд:\n" \
                    "add - добавить новую запись запись\n" \
-                   "show - вывести все записи\n" \
+                   "show - показать все записи\n" \
                    "filter - фильтровать записи по дате\n" \
                    "delete - удалить запись\n" \
                    "edit - изменить запись\n" \
@@ -37,7 +36,7 @@ class Note:
             if stop:
                 return stop
         else:
-            print(Fore.RED + f"Вы ввели не верную команду - {cmd}")
+            print(Fore.RED + f"Вы ввели неверную команду - {cmd}")
 
     @staticmethod
     def get_command():
@@ -56,13 +55,13 @@ class Note:
         """Обработчик команды add"""
         title, body = self.get_data_note()
         self.methods.render_note(title, body)
-        print(Fore.GREEN + f"Замета {title} - успешно добавлена!\n")
+        print(Fore.GREEN + f"Заметка {title} - успешно добавлена!\n")
 
     def cmd_show(self):
         """Обработчик команды show"""
         notes = self.methods.get_note_all()
         if notes is None:
-            print(Fore.RED + "Записей еще нет, добавь новую")
+            print(Fore.RED + "Записей нет, добавь новую!")
         else:
             self.show_notes(notes)
 
@@ -83,9 +82,9 @@ class Note:
             title, body = self.get_new_data_note()
             note = self.methods.edit_note(note_pk, title, body)
             self.show_note(note)
-            print(Fore.GREEN + "Успешно изменена!\n")
+            print(Fore.GREEN + "Успешно изменено!\n")
         else:
-            print(Fore.RED + "Записи с таким номером нет!\n")
+            print(Fore.RED + "Запись с таким номером отсутствует!\n")
 
     def get_date(self):
         """Получение даты"""
@@ -96,7 +95,7 @@ class Note:
             if self.check_separator(date_list):
                 if date_correct := self.check_date(date_list):
                     return date_correct
-            print(Fore.RED + "Проверти разделите межу день.месяц.год!\n"
+            print(Fore.RED + "Проверти разделите межу: день.месяц.год!\n"
                              f"Вы ввели - {date}")
 
     def check_date(self, date_list: list):
@@ -136,14 +135,14 @@ class Note:
         try:
             int_day = int(day)
             if int_day > 31 or int_day == 0:
-                print(Fore.RED + "Номер дня недели должен быть от 1 до 31\n"
+                print(Fore.RED + "Номер дня недели должен быть: от 1 до 31\n"
                                  f"Вы ввели - {day}")
                 return False
             if day[0] == '0':
                 return day[1]
             return day
         except ValueError:
-            print(Fore.RED + f"Вы ввели не верное значение для дня - {day}")
+            print(Fore.RED + f"Вы ввели неверное значение для дня - {day}")
             return False
 
     @staticmethod
@@ -159,12 +158,12 @@ class Note:
         try:
             int_month = int(format_month)
             if int_month > 12 or int_month < 1:
-                print(Fore.RED + "Проверьте корректность месяца, месяц должен быть от 1 до 12\n"
+                print(Fore.RED + "Проверьте корректность месяца, месяц должен быть: от 1 до 12\n"
                                  f"Вы ввели {month}")
                 return False
             return format_month
         except ValueError:
-            print(Fore.RED + f"Вы ввели не верное значение для месяца - {month}")
+            print(Fore.RED + f"Вы ввели неверное значение для месяца - {month}")
             return False
 
     @staticmethod
@@ -182,7 +181,7 @@ class Note:
                 return False
             return format_year
         except ValueError:
-            print(Fore.RED + f"Вы ввели не верное значение для года - {year}")
+            print(Fore.RED + f"Вы ввели неверное значение для года - {year}")
             return False
 
     def get_pk_note(self):
